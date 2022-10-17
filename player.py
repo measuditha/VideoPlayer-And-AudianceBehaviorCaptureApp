@@ -4,6 +4,7 @@ from PyQt5.QtGui import QIcon, QPalette
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
 from PyQt5.QtMultimediaWidgets import QVideoWidget
 from PyQt5.QtCore import Qt, QUrl
+import numpy as np
 import cv2
 import sys
 
@@ -67,16 +68,22 @@ class Player(QWidget):
             self.playBtn.setEnabled(True)
 
     def capture(self):
+        fourcc = cv2.VideoWriter_fourcc(*'XVID')
+        out = cv2.VideoWriter('captured.mp4', fourcc, 20.0, (640,480))
+
         cap = cv2.VideoCapture(0)
+
         while(True):
             ret, frame = cap.read()
 
             if ret == True:
+                out.write(frame)
                 cv2.imshow("Capture", frame)
                 key = cv2.waitKey(1)
                 if key == ord("q"):
                     break
         cap.release()
+        out.release()
         cv2.destroyAllWindows()
 
     def play_video(self):
