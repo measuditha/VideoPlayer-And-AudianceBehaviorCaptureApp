@@ -67,34 +67,14 @@ class Player(QWidget):
             self.playBtn.setEnabled(True)
 
     def capture(self):
-        filename = 'footage.mp4'
-        frames_per_seconds = 24.0
-        res = '720p'
-
-        def change_res(cap, width, height):
-            cap.set(3,width)
-            cap.set(4, height)
-
-        STD_DIMENSIONS = {
-            "720p":(640, 480)
-        }
-
-        def get_dims(cap, res='720p'):
-            width, height = STD_DIMENSIONS['720p']
-            if res in STD_DIMENSIONS:
-                width, height = STD_DIMENSIONS[res]
-            change_res(width, height)
-            return width, height
-
-
         cap = cv2.VideoCapture(0)
-        dims = get_dims(cap, res=res)
-
         while(True):
             ret, frame = cap.read()
 
-            cv2.imshow('frame', frame)
-            if cv2.waitkey(20) & 0xFF == ord('q'):
+            if ret == True:
+                cv2.imshow("Capture", frame)
+                key = cv2.waitKey(1)
+                if key == ord("q"):
                     break
         cap.release()
         cv2.destroyAllWindows()
