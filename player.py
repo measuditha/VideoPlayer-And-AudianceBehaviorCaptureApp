@@ -20,19 +20,19 @@ class Player(QWidget):
 
         self.create_player()
 
-    def capture(self):
-        webcam = cv2.VideoCapture(0)
-
-        while True:
-            ret, frame = webcam.read()
-
-            if ret == True:
-                cv2.imshow("Capture", frame)
-                key = cv2.waitKey(1)
-                if key == ord("q"):
-                    break
-        webcam.release()
-        cv2.destroyAllWindows()
+    # def capture(self):
+    #     webcam = cv2.VideoCapture(0)
+    #
+    #     while True:
+    #         ret, frame = webcam.read()
+    #
+    #         if ret == True:
+    #             cv2.imshow("Capture", frame)
+    #             key = cv2.waitKey(1)
+    #             if key == ord("q"):
+    #                 break
+    #     webcam.release()
+    #     cv2.destroyAllWindows()14
     def create_player(self):
         # Main Window
         self.mediaPlayer = QMediaPlayer(None,QMediaPlayer.VideoSurface)
@@ -81,7 +81,6 @@ class Player(QWidget):
     def play_video(self):
         if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
             self.mediaPlayer.pause()
-            capture(self)
         else:
             self.mediaPlayer.play()
 
