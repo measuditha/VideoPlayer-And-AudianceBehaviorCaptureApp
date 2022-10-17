@@ -21,6 +21,7 @@ class Player(QWidget):
         self.create_player()
 
     def create_player(self):
+        # Main Window
         self.mediaPlayer = QMediaPlayer(None,QMediaPlayer.VideoSurface)
         videowidget = QVideoWidget()
 
@@ -32,10 +33,12 @@ class Player(QWidget):
         self.playBtn = QPushButton('Play')
         self.playBtn.setEnabled(False)
         self.playBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
-        self.playBtn.clicked.connect(self.paly_video)
+        self.playBtn.clicked.connect(self.play_video)
 
+        # Video Slider Bar
         self.slider = QSlider(Qt.Horizontal)
         self.slider.setRange(0,0)
+        self.slider.sliderMoved.connect(self.set_position)
 
         hbox = QHBoxLayout()
         hbox.setContentsMargins(0,0,0,0)
@@ -48,7 +51,13 @@ class Player(QWidget):
         vbox.addWidget(videowidget)
         vbox.addLayout(hbox)
 
+        self.mediaPlayer.setVideoOutput(videowidget)
+
         self.setLayout(vbox)
+
+        self.mediaPlayer.stateChanged.connect(self.mediastate_changed)
+        self.mediaPlayer.positionChanged.connect(self.position_changed)
+        self.mediaPlayer.durationChanged.connect(self.duration_changed)
 
     def open_file(self):
         filename, _= QFileDialog.getOpenFileName(self,"Open Video")
@@ -62,6 +71,20 @@ class Player(QWidget):
         else:
             self.mediaPlayer.play()
 
+    def mediastate_changed(self, state):
+        if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
+            self.playBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaPause))
+
+        else: self.playBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
+
+    def position_changed(self, position):
+        self.slider.setValue(position)
+
+    def duration_changed(self, duration):
+        self.slider.setRange(0, duration)
+
+    def set_position(self, position):
+        self.mediaPlayer.setPosition(position)
 app = QApplication(sys.argv)
 player = Player()
 player.show()
