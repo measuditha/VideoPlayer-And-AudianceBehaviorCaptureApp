@@ -4,12 +4,12 @@ from PyQt5.QtGui import QIcon, QPalette
 from PyQt5.QtMultimedia import QMediaPlayer,QMediaContent
 from PyQt5.QtMultimediaWidgets import QVideoWidget
 from PyQt5.QtCore import Qt, QUrl
+import cv2
 import sys
 
 class Player(QWidget):
     def __init__(self):
         super().__init__()
-
         self.setWindowIcon(QIcon("player.ico"))
         self.setWindowTitle("Behaviour Capturer")
         self.setGeometry(350,100,700,500)
@@ -20,6 +20,19 @@ class Player(QWidget):
 
         self.create_player()
 
+    def capture(self):
+        webcam = cv2.VideoCapture(0)
+
+        while True:
+            ret, frame = webcam.read()
+
+            if ret == True:
+                cv2.imshow("Capture", frame)
+                key = cv2.waitKey(1)
+                if key == ord("q"):
+                    break
+        webcam.release()
+        cv2.destroyAllWindows()
     def create_player(self):
         # Main Window
         self.mediaPlayer = QMediaPlayer(None,QMediaPlayer.VideoSurface)
@@ -68,6 +81,7 @@ class Player(QWidget):
     def play_video(self):
         if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
             self.mediaPlayer.pause()
+            capture(self)
         else:
             self.mediaPlayer.play()
 
